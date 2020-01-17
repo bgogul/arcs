@@ -49,13 +49,21 @@ RUN tools/install-android-sdk ${ANDROID_HOME}
 # i.e. scripts {...} at package.json
 RUN npm set unsafe-perm true
 
-# Install Project
-COPY package.json $WORKSPACE/package.json
+# Install npm packages
+COPY concrete-storage/package.json concrete-storage/package.json
+RUN (cd concrete-storage && npm install)
+COPY devtools/package.json devtools/package.json
+RUN (cd devtools && npm install)
+COPY cloud/package.json cloud/package.json
+RUN (cd cloud && npm install)
+COPY src/tools/vscode-language-client/package.json src/tools/vscode-language-client/package.json
+RUN (cd src/tools/vscode-language-client && npm install)
+COPY package.json package.json
 RUN npm install
 
-# Create bazel cache directory
-RUN mkdir -p /disk-cache/
-
+# Prefetch external bazel dependencies
+COPY WORKSPACE WORKSPACE
+RUN ./bazelisk fetch ...
 
 ########
 
