@@ -61,7 +61,19 @@ RUN (cd concrete-storage && npm install)
 COPY package.json package.json
 RUN npm install
 
-########
+# Fetch external Bazel artifacts.
+# Copy over the WORKSPACE file, everything it imports, and bazelisk.
+COPY tools/bazelisk-* tools/
+COPY build_defs/emscripten build_defs/emscripten
+COPY build_defs/kotlin_native build_defs/kotlin_native
+COPY emscripten_cache emscripten_cache
+COPY .bazelignore \
+     .bazelversion \
+     bazelisk \
+     WORKSPACE \
+     ./
+RUN ./bazelisk fetch ...
 
+# Copy the contents of the working dir. After this the image should be ready for
+# use.
 COPY . .
-ENTRYPOINT [ "tools/local-presubmit" ]
