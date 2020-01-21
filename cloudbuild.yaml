@@ -8,35 +8,95 @@ steps:
 # Build the new Docker image (caching from the pre-built one)
 - id: 'build-image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['build',
-         '--cache-from=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
-         '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
-        #  '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$COMMIT_SHA',
-         '--tag=arcs-base',
-         '.']
+  args: [
+    'build',
+    '--cache-from=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
+    '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
+    # '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$COMMIT_SHA',
+    '--tag=arcs-base',
+    '.',
+  ]
   waitFor: ['pull-image']
 
 # Push updated Docker image to Container Registry.
 - id: 'push-image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['push',
-         'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head']
+  args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head']
   waitFor: ['build-image']
 
-# Run sigh build.
-- id: 'sigh-build'
+- id: 'local-presubmit'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['run',
-         '--rm',
-         'arcs-base',
-         'tools/sigh',
-         'build']
+  args: [
+    'run', '--rm', 'arcs-base',
+    'tools/local-presubmit',
+  ]
   waitFor: ['build-image']
+
+# #####
+# # Sigh lint and test
+# #####
+
+# # TODO: Figure out how to make this work.
+# # - id: 'ktlint'
+# #   name: 'gcr.io/cloud-builders/docker'
+# #   args: [
+# #     'run', '--rm', 'arcs-base',
+# #     'tools/ktlint',
+# #   ]
+# #   waitFor: ['build-image']
+
+# - id: 'sigh-lint'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-base',
+#     'tools/sigh', 'lint',
+#   ]
+#   # waitFor: ['ktlint']
+#   waitFor: ['build-image']
+
+# - id: 'sigh-test'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-base',
+#     'tools/sigh', 'test', '--all',
+#   ]
+#   waitFor: ['sigh-lint']
+
+# #####
+# # Bazel build and test
+# #####
+
+# - id: 'bazel-build'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-base',
+#     './bazelisk', '--bazelrc=tools/travis.bazelrc', 'build', '//java/...', '//javatests/...', '//particles/...', '//src/...',
+#   ]
+#   waitFor: ['build-image']
+
+# - id: 'bazel-test'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-base',
+#     './bazelisk', '--bazelrc=tools/travis.bazelrc', 'test', '//java/...', '//javatests/...', '//particles/...', '//src/...',
+#   ]
+#   waitFor: ['bazel-build']
+
+# - id: 'shell-test'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-base',
+#     'tools/sigh webpackStorage && tools/sigh testShells',
+#   ]
+#   waitFor: ['bazel-build']
 
 images:
 - 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'
 
 timeout: 1800s # 30 mins
+
+options:
+  machineType: 'N1_HIGHCPU_32'
 
 substitutions:
   _IMAGE_NAME: arcs

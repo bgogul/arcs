@@ -72,7 +72,7 @@ COPY .bazelignore \
      bazelisk \
      WORKSPACE \
      ./
-RUN ./bazelisk fetch ...
+RUN ./bazelisk sync
 
 # Copy the contents of the working dir. After this the image should be ready for
 # use.
