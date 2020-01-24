@@ -43,6 +43,7 @@ RUN apt-get install -y nodejs
 ENV ANDROID_HOME "/sdk"
 COPY tools/android-sdk-packages.txt tools/android-sdk-packages.txt
 COPY tools/install-android-sdk tools/install-android-sdk
+COPY tools/logging.sh tools/logging.sh
 RUN tools/install-android-sdk ${ANDROID_HOME}
 
 # Allows running script with privileged permission
@@ -63,16 +64,16 @@ RUN npm install
 
 # Fetch external Bazel artifacts.
 # Copy over the WORKSPACE file, everything it imports, and bazelisk.
-COPY tools/bazelisk-* tools/
+COPY tools/bazelisk* tools/
 COPY build_defs/emscripten build_defs/emscripten
 COPY build_defs/kotlin_native build_defs/kotlin_native
 COPY emscripten_cache emscripten_cache
 COPY .bazelignore \
      .bazelversion \
-     bazelisk \
      WORKSPACE \
+     BUILD.bazel \
      ./
-RUN ./bazelisk sync
+RUN ./tools/bazelisk sync
 
 # Copy the contents of the working dir. After this the image should be ready for
 # use.
