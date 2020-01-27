@@ -35,7 +35,7 @@ describe(`pipes-shell (${persona})`, () => {
     await waitForPipeOutput(`dinner reservations`);
   });
   it('passes WASM test', async function() {
-    await waitForPipeOutput(`'template':'<b>Hello, world!</b>'`);
+    await waitForPipeOutput(`'template':'<b>Hello, world! This is great! </b>'`);
   });
 });
 
