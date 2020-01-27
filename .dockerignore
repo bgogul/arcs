@@ -15,4 +15,3 @@ build
 .vscode
 devtools/build
 server/log.txt
-.git
