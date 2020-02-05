@@ -26,10 +26,10 @@ kt_jvm_library(
     deps = ["//third_party/java/auto:auto_service"],
 )
 
-kt_jvm_library(
+kt_jvm_binary(
     name = "annotator_test",
     srcs = ["TestAnnotation.kt"],
-    # main_class = "arcs.core.annotations.TestAnnotationKt",
+    main_class = "arcs.core.annotations.TestAnnotationKt",
     plugins = [":particle_annotation_plugin"],
     deps = [":particle_annotation"]
 )
