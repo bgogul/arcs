@@ -23,16 +23,49 @@ steps:
   args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head']
   waitFor: ['build-image']
 
-- id: 'local-presubmit'
+- id: 'web-pack'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run',  '--rm', 'arcs-base',
+    'tools/sigh', 'webpack'
+  ]
+  waitFor: ['build-image']
+
+- id: 'bazel-tests'
   name: 'gcr.io/cloud-builders/docker'
   args: [
     'run',
     '--network=cloudbuild',
     '--rm', 'arcs-base',
-    'tools/local-presubmit',
+    'tools/bazelisk',
     '--bazelrc=tools/gcb.bazelrc',
+    'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
   ]
-  waitFor: ['build-image']
+  waitFor: ['web-pack']
+
+- id: 'test-shells'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run', '--rm', 'arcs-base',
+    'tools/sigh', 'testShells'
+  ]
+  waitFor: ['web-pack']
+
+- id: 'sigh-test'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run', '--rm', 'arcs-base',
+    'tools/sigh', 'test'
+  ]
+  waitFor: ['web-pack']
+
+- id: 'lint'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run', '--rm', 'arcs-base',
+    'tools/sigh', 'lint'
+  ]
+  waitFor: ['web-pack']
 
 images:
 - 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'

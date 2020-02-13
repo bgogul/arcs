@@ -29,9 +29,9 @@ RUN unzip /usr/bin/chromedriver_linux64.zip -d /usr/bin/chromedriver
 RUN chmod +x /usr/bin/chromedriver
 
 # Set up workspace
-ENV WORKSPACE /usr/src/app
-RUN mkdir -p $WORKSPACE
-WORKDIR $WORKSPACE
+# ENV WORKSPACE /usr/src/app
+# RUN mkdir -p $WORKSPACE
+# WORKDIR $WORKSPACE
 
 # Install ktlint
 RUN (cd /usr/bin/ && \
@@ -52,6 +52,7 @@ COPY tools/android-sdk-packages.txt tools/android-sdk-packages.txt
 COPY tools/install-android-sdk tools/install-android-sdk
 COPY tools/logging.sh tools/logging.sh
 RUN tools/install-android-sdk ${ANDROID_HOME}
+
 
 # Install npm packages
 COPY concrete-storage/package.json concrete-storage/package.json
