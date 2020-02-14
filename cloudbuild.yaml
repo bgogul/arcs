@@ -58,7 +58,7 @@ steps:
     'run', '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'test'
   ]
-  waitFor: ['web-pack']
+  waitFor: ['bazel-tests']
 
 - id: 'lint'
   name: 'gcr.io/cloud-builders/docker'
