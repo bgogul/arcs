@@ -26,7 +26,7 @@ steps:
 - id: 'web-pack'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run',  '--rm', 'arcs-bgogul-base',
+    'run', 'arcs-bgogul-base',
     'tools/sigh', 'webpack'
   ]
   waitFor: ['build-image']
@@ -36,7 +36,7 @@ steps:
   args: [
     'run',
     '--network=cloudbuild',
-    '--rm', 'arcs-bgogul-base',
+    'arcs-bgogul-base',
     'tools/bazelisk',
     '--bazelrc=tools/gcb.bazelrc',
     'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
@@ -46,7 +46,7 @@ steps:
 - id: 'test-shells'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-bgogul-base',
+    'run', 'arcs-bgogul-base',
     'tools/sigh', 'testShells'
   ]
   dir: 'usr/src/app'
@@ -55,7 +55,7 @@ steps:
 - id: 'sigh-test'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-bgogul-base',
+    'run', 'arcs-bgogul-base',
     'tools/sigh', 'test'
   ]
   waitFor: ['bazel-tests']
@@ -63,7 +63,7 @@ steps:
 - id: 'lint'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-bgogul-base',
+    'run', 'arcs-bgogul-base',
     'tools/sigh', 'lint'
   ]
   waitFor: ['web-pack']
