@@ -30,7 +30,7 @@ RUN chmod +x /usr/bin/chromedriver
 
 # Set up workspace
 RUN pwd
-WORKDIR arcs-src
+WORKDIR /workspace/arcs-src
 RUN pwd
 
 # Install ktlint
