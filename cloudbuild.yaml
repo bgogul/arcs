@@ -27,7 +27,7 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args: [
     'run',  '--rm', 'arcs-bgogul-base',
-    'tools/sigh', 'webpack'
+    'tools/sigh', 'webpack', 'testShells'
   ]
   waitFor: ['build-image']
 
