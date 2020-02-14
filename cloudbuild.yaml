@@ -2,7 +2,7 @@ steps:
 # Pull most recent Docker image.
 - id: 'pull-image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head']
+  args: ['pull', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:bgogul']
   waitFor: ['-']
 
 # Build the new Docker image (caching from the pre-built one)
@@ -10,9 +10,9 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '--cache-from=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
-    '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head',
-    '--tag=arcs-base',
+    '--cache-from=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:bgogul',
+    '--tag=gcr.io/$PROJECT_ID/${_IMAGE_NAME}:bgogul',
+    '--tag=arcs-bgogul-base',
     '.',
   ]
   waitFor: ['pull-image']
@@ -20,13 +20,13 @@ steps:
 # Push updated Docker image to Container Registry.
 - id: 'push-image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:head']
+  args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:bgogul']
   waitFor: ['build-image']
 
 - id: 'web-pack'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run',  '--rm', 'arcs-base',
+    'run',  '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'webpack'
   ]
   waitFor: ['build-image']
@@ -36,7 +36,7 @@ steps:
   args: [
     'run',
     '--network=cloudbuild',
-    '--rm', 'arcs-base',
+    '--rm', 'arcs-bgogul-base',
     'tools/bazelisk',
     '--bazelrc=tools/gcb.bazelrc',
     'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
@@ -46,7 +46,7 @@ steps:
 - id: 'test-shells'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-base',
+    'run', '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'testShells'
   ]
   waitFor: ['web-pack']
@@ -54,7 +54,7 @@ steps:
 - id: 'sigh-test'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-base',
+    'run', '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'test'
   ]
   waitFor: ['web-pack']
@@ -62,7 +62,7 @@ steps:
 - id: 'lint'
   name: 'gcr.io/cloud-builders/docker'
   args: [
-    'run', '--rm', 'arcs-base',
+    'run', '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'lint'
   ]
   waitFor: ['web-pack']
