@@ -29,9 +29,7 @@ RUN unzip /usr/bin/chromedriver_linux64.zip -d /usr/bin/chromedriver
 RUN chmod +x /usr/bin/chromedriver
 
 # Set up workspace
-ENV WORKSPACE /workspace/usr/src/app
-RUN mkdir -p $WORKSPACE
-WORKDIR $WORKSPACE
+WORKDIR arcs-src
 
 # Install ktlint
 RUN (cd /usr/bin/ && \

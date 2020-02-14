@@ -27,7 +27,7 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args: [
     'run',  '--rm', 'arcs-bgogul-base',
-    'tools/sigh', 'webpack', 'testShells'
+    'tools/sigh', 'webpack'
   ]
   waitFor: ['build-image']
 
@@ -49,15 +49,16 @@ steps:
     'run', '--rm', 'arcs-bgogul-base',
     'tools/sigh', 'testShells'
   ]
-  waitFor: ['web-pack']
+  dir: 'usr/src/app'
+  waitFor: ['bazel-tests']
 
-# - id: 'sigh-test'
-#   name: 'gcr.io/cloud-builders/docker'
-#   args: [
-#     'run', '--rm', 'arcs-bgogul-base',
-#     'tools/sigh', 'test'
-#   ]
-#   waitFor: ['web-pack']
+- id: 'sigh-test'
+  name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'run', '--rm', 'arcs-bgogul-base',
+    'tools/sigh', 'test'
+  ]
+  waitFor: ['web-pack']
 
 - id: 'lint'
   name: 'gcr.io/cloud-builders/docker'
