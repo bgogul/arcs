@@ -30,7 +30,7 @@ RUN chmod +x /usr/bin/chromedriver
 
 # Set up workspace
 RUN mkdir -p /workspace/bazel
-WORKDIR arcs-src
+WORKDIR /workspace/arcs-src
 
 # Install ktlint
 RUN (cd /usr/bin/ && \
