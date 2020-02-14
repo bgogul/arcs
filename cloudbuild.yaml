@@ -39,8 +39,8 @@ steps:
     'arcs-bgogul-base',
     'tools/bazelisk',
     '--bazelrc=tools/gcb.bazelrc',
-    'test', '//particles/...',
     # 'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
+    'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
   ]
   waitFor: ['web-pack']
 
