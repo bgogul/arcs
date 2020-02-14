@@ -51,13 +51,13 @@ steps:
   ]
   waitFor: ['web-pack']
 
-- id: 'sigh-test'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'run', '--rm', 'arcs-bgogul-base',
-    'tools/sigh', 'test'
-  ]
-  waitFor: ['web-pack']
+# - id: 'sigh-test'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', '--rm', 'arcs-bgogul-base',
+#     'tools/sigh', 'test'
+#   ]
+#   waitFor: ['web-pack']
 
 - id: 'lint'
   name: 'gcr.io/cloud-builders/docker'
