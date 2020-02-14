@@ -66,7 +66,7 @@ steps:
     'run', 'arcs-bgogul-base',
     'tools/sigh', 'lint'
   ]
-  waitFor: ['web-pack']
+  waitFor: ['sigh-test']
 
 images:
 - 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'
