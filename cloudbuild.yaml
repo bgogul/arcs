@@ -39,34 +39,35 @@ steps:
     'arcs-bgogul-base',
     'tools/bazelisk',
     '--bazelrc=tools/gcb.bazelrc',
-    'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
+    'test', '//particles/...',
+    # 'test', '//java/...', '//javatests/...', '//src/...', '//particles/...'
   ]
   waitFor: ['web-pack']
 
-- id: 'test-shells'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'run', 'arcs-bgogul-base',
-    'tools/sigh', 'testShells'
-  ]
-  dir: 'usr/src/app'
-  waitFor: ['bazel-tests']
+# - id: 'test-shells'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', 'arcs-bgogul-base',
+#     'tools/sigh', 'testShells'
+#   ]
+#   dir: 'usr/src/app'
+#   waitFor: ['bazel-tests']
 
-- id: 'sigh-test'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'run', 'arcs-bgogul-base',
-    'tools/sigh', 'test'
-  ]
-  waitFor: ['test-shells']
+# - id: 'sigh-test'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', 'arcs-bgogul-base',
+#     'tools/sigh', 'test'
+#   ]
+#   waitFor: ['test-shells']
 
-- id: 'lint'
-  name: 'gcr.io/cloud-builders/docker'
-  args: [
-    'run', 'arcs-bgogul-base',
-    'tools/sigh', 'lint'
-  ]
-  waitFor: ['sigh-test']
+# - id: 'lint'
+#   name: 'gcr.io/cloud-builders/docker'
+#   args: [
+#     'run', 'arcs-bgogul-base',
+#     'tools/sigh', 'lint'
+#   ]
+#   waitFor: ['sigh-test']
 
 images:
 - 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}'
