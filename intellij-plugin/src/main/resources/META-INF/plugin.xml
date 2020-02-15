@@ -12,4 +12,10 @@
         <lang.parserDefinition language="Arcs" implementationClass="com.google.arcs.ArcsParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Arcs" implementationClass="com.google.arcs.ArcsSyntaxHighlighterFactory"/>
     </extensions>
+  <actions>
+    <action id="com.google.arcs.dfa.PopupDialogAction" class="com.google.arcs.dfa.PopupDialogAction"
+            text="Run Arcs DFA" description="Run DFA on the given files.">
+      <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+    </action>
+  </actions>
 </idea-plugin>
