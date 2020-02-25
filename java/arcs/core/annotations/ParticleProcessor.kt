@@ -13,17 +13,14 @@ import javax.tools.StandardLocation
 @AutoService(Processor::class)
 class ParticleProcessor : AbstractProcessor() {
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        println("annotation")
         return mutableSetOf(Particle::class.java.name)
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
-        println("Supported")
         return SourceVersion.latest()
     }
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
-        println("process")
         roundEnvironment?.getElementsAnnotatedWith(Particle::class.java)
                 ?.forEach {
                     val className = it.simpleName.toString()
