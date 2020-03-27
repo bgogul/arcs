@@ -23,6 +23,6 @@ class FlowGraphUtilsTest {
         val recipeEnvelopeProto: RecipeEnvelopeProto = builder.build()
         val recipe: Recipe = recipeEnvelopeProto.decodeRecipe()
         val graph = FlowGraph(recipe)
-        print (graph.toDotGraph())
+        print (graph.toDotGraph {_ -> ""})
     }
 }

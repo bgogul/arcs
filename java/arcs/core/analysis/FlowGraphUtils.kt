@@ -16,7 +16,7 @@ import arcs.core.type.Type
 import java.util.IdentityHashMap
 
 /** Returns a dot representation of the [FlowGraph]. */
-fun FlowGraph.toDotGraph(): String {
+fun FlowGraph.toDotGraph(nodeLabeler: (FlowGraph.Node) -> String): String {
     val toStringOptions = Type.ToStringOptions(hideFields = false, pretty = true)
     var particleIndices = mutableMapOf<String, Int>()
     val getUniqueName = { particle: Recipe.Particle ->
@@ -36,10 +36,14 @@ fun FlowGraph.toDotGraph(): String {
     }
     val dotNodes = dotNodeNames.map { (node, name) ->
         when (node) {
-            is FlowGraph.Node.Particle -> """  ${name}[shape="box"];"""
+            is FlowGraph.Node.Particle -> {
+                val nodeLabel = "$name: ${nodeLabeler(node)}"
+                """  ${name}[shape="box", label="$nodeLabel"];"""
+            }
             is FlowGraph.Node.Handle -> {
                 val typeString = node.handle.type.toString(toStringOptions)
-                """  ${name}[label="$name: ${typeString}"];"""
+                val nodeLabel = "$name: $typeString ${nodeLabeler(node)}"
+                """  ${name}[label="$name: ${nodeLabel}"];"""
             }
         }
     }.joinToString(separator = "\n")
