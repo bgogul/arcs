@@ -1,0 +1,134 @@
+# A proto encoding of the following recipe: 
+# """
+# external particle Writer
+#   data: writes Thing {name: Text}
+# 
+# external particle Redactor
+#   data: reads Thing {name: Text}
+# 
+# recipe PassThrough
+#   thing: create
+#   Writer
+#     data: writes thing
+#   Redactor
+#     data: reads thing
+# """
+
+recipe {
+  name: "LoggableDemo"
+  handles {
+    name: "thing"
+    fate: CREATE
+    storage_key: "ramdisk://thing"
+  }
+  handles {
+    name: "redacted_thing"
+    fate: CREATE
+    storage_key: "ramdisk://thing"
+  }
+  handles {
+    name: "unredacted_thing"
+    fate: CREATE
+    storage_key: "ramdisk://thing"
+  }
+  particles {
+    spec_name: "Redactor"
+    connections {
+      name: "data"
+      handle: "thing"
+    }
+    connections {
+      name: "redacted"
+      handle: "redacted_thing"
+    }
+    connections {
+      name: "unredacted"
+      handle: "unredacted_thing"
+    }
+  }
+  particles {
+    spec_name: "Creator"
+    connections {
+      name: "data"
+      handle: "thing"
+    }
+  }
+}
+
+particle_specs {
+  name: "Redactor"
+  location: "RedactorLocation"
+  connections {
+    name: "data"
+    direction: READS
+    type {
+      entity {
+        schema {
+          names: "Thing"
+          fields {
+            key: "name"
+            value: {
+              primitive: TEXT
+            }
+          }
+        }
+      }
+    }
+  }
+  connections {
+    name: "unredacted"
+    direction: WRITES
+    type {
+      entity {
+        schema {
+          names: "Thing"
+          fields {
+            key: "name"
+            value: {
+              primitive: TEXT
+            }
+          }
+        }
+      }
+    }
+  }
+  connections {
+    name: "redacted"
+    direction: WRITES
+    type {
+      entity {
+        schema {
+          names: "Thing"
+          fields {
+            key: "name"
+            value: {
+              primitive: TEXT
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+particle_specs {
+  name: "Creator"
+  location: "CreatorLocation"
+  connections {
+    name: "data"
+    direction: WRITES
+    type {
+      entity {
+        schema {
+          names: "Thing"
+          fields {
+            key: "name"
+            value: {
+              primitive: TEXT
+            }
+          }
+        }
+      }
+    }
+  }
+}
