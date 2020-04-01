@@ -29,4 +29,22 @@ class LoggableAnalysisTest {
             }
         )
     }
+
+    @Test
+    fun dumpGraph2() {
+        val path = runfilesDir() + "java/arcs/core/data/testdata/loggable.textproto"
+        val builder = RecipeEnvelopeProto.newBuilder()
+        TextFormat.getParser().merge(File(path).readText(), builder)
+        val recipeEnvelopeProto: RecipeEnvelopeProto = builder.build()
+        val recipe: Recipe = recipeEnvelopeProto.decodeRecipe()
+        val graph = RecipeGraph(recipe)
+        val analysis = FieldAnalysis()
+        analysis.computeFixpoint(graph)
+        print (
+            graph.toDotGraph { node ->
+                val state = analysis.nodeValues.getOrDefault(node, LoggableDomain())
+                "[${state}]"
+            }
+        )
+    }
 }
