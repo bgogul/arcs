@@ -50,3 +50,9 @@ fun <K, V> Map<K, V>.mergeWith(
         }
     return (thisKeys + thatOnlyKeys).toMap()
 }
+
+sealed class MapMergeCombine<K, V> {
+    data class ThisOnly<K, V>(val key: K, val v: V): MapMergeCombine<K, V>()
+    data class ThatOnly<K, V>(val key: K, val v: V): MapMergeCombine<K, V>()
+    data class ThisAndThat<K, V>(val key: K, val v1: V, val v2: V): MapMergeCombine<K, V>()
+}
