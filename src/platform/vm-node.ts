@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import vm from 'vm';
+import * as vm from 'vm.js';
 export {vm};

@@ -1,9 +1,0 @@
-{
-  "packageWhitelist": [
-    /** no license, via vis package */
-    "emitter-component",
-    /** no license, via vis package */
-    "keycharm"
-  ]
-}
-

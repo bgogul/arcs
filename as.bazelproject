@@ -1,3 +1,0 @@
-import .bazelproject
-
-android_sdk_platform: android-29

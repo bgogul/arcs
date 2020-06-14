@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import minimist from 'minimist';
+import * as minimist from 'minimist.js';
 import {Manifest, ManifestWarning} from '../runtime/manifest.js';
 import {Loader} from '../platform/loader-node.js';
 import {SimpleVolatileMemoryProvider} from '../runtime/storageNG/drivers/volatile.js';

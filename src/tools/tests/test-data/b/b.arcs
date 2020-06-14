@@ -1,4 +1,0 @@
-schema Sweet
-  name: Text
-
-store SweetGoodness of [Sweet] #sweets in 'b.json'

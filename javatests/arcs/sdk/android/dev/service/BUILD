@@ -12,5 +12,6 @@ java_test(
         "//java/arcs/sdk/android/dev/service",
         "//third_party/java/json",
         "//third_party/java/junit",
+        "@robolectric//bazel:android-all",
     ],
 )

@@ -1,5 +1,0 @@
-schema Thing
-  name: Text
-
-particle A in 'no-such-particle.js'
-  thing: reads Thing
