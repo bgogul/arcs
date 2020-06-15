@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import protobuf from 'protobufjs';
+import * as protobuf from 'protobufjs.js';
 import {runfilesDir} from './runfiles-dir.oss.js';
 
 // These variables store classes that deal with protos, upper case name is justified.

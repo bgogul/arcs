@@ -1,5 +1,7 @@
 package arcs.sdk.android.dev.service;
 
+import com.google.android.libraries.sting.Sting;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -15,7 +17,8 @@ import arcs.sdk.android.dev.api.ArcData;
  * ArcsService wraps Arcs runtime. Other Android activities/services are expected to connect to
  * ArcsService to communicate with Arcs.
  */
-public class ArcsService extends Service {
+@Sting(Service.class)
+public class ArcsService extends Sting_ArcsService {
 
   private static final String TAG = "Arcs";
 
@@ -26,7 +29,7 @@ public class ArcsService extends Service {
   public void onCreate() {
     super.onCreate();
     Log.d(TAG, "onCreate()");
-    DaggerArcsServiceComponent.builder().build().inject(this);
+    
     arcsShellApi.init(this);
   }
 

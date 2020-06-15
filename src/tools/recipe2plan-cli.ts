@@ -7,9 +7,9 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import minimist from 'minimist';
-import fs from 'fs';
-import path from 'path';
+import * as minimist from 'minimist.js';
+import * as fs from 'fs.js';
+import * as path from 'path.js';
 import {Runtime} from '../runtime/runtime.js';
 import {recipe2plan, OutputFormat} from './recipe2plan.js';
 

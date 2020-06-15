@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {createConnection, IConnection} from 'vscode-languageserver';
+import {createConnection, IConnection} from 'vscode-languageserver.js';
 
 import {DevNullLogger, FileLogger, LanguageServiceOptions} from './util.js';
 import {LanguageService} from './language-service.js';
