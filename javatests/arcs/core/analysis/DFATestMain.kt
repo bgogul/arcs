@@ -21,6 +21,11 @@ fun Check.asString(): String {
 
 fun manifestToProto(manifestFile: String): ManifestProto {
     val WORKING_DIR = File("/usr/local/google/home/bgogul/workspace/cerebra/arcs")
+    val manifestFileAbsolutePath = if (manifestFile.startsWith('/')) {
+        manifestFile
+    } else {
+        System.getProperty("user.dir") + "/$manifestFile"
+    }
     val tmpDir = System.getProperty("java.io.tmpdir")
     val tmpFile = File
         .createTempFile("tmp", ".pb.bin", File(tmpDir))
@@ -29,7 +34,7 @@ fun manifestToProto(manifestFile: String): ManifestProto {
     val sighCommandArgs = listOf(
         "tools/sigh",
         "manifest2proto",
-        manifestFile,
+        manifestFileAbsolutePath,
         "--outfile",
         tmpFile.getName(),
         "--outdir",
