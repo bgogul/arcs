@@ -14,7 +14,7 @@ import {ParticleSpec, HandleConnectionSpec} from '../runtime/particle-spec.js';
 import {EntityType, CollectionType, Type} from '../runtime/type.js';
 import {KTExtracter} from '../runtime/refiner.js';
 import {Dictionary} from '../runtime/hot.js';
-import minimist from 'minimist';
+import * as minimist from 'minimist.js';
 import {KotlinGenerationUtils, leftPad, quote} from './kotlin-generation-utils.js';
 import {assert} from '../platform/assert-web.js';
 import {Direction} from '../runtime/manifest-ast-nodes.js';

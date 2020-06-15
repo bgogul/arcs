@@ -53,7 +53,6 @@ import arcs.core.storage.database.Database
 import arcs.core.storage.database.DatabaseClient
 import arcs.core.storage.database.DatabaseData
 import arcs.core.storage.database.DatabasePerformanceStatistics
-import arcs.core.storage.database.ReferenceWithVersion
 import arcs.core.util.TaggedLog
 import arcs.core.util.guardedBy
 import arcs.core.util.performance.Counters
@@ -389,9 +388,9 @@ class DatabaseImpl(
         require(values.size <= 1) {
             "Singleton at storage key $storageKey has more than one value."
         }
-        val value = values.singleOrNull()
+        val reference = values.singleOrNull()
         DatabaseData.Singleton(
-            value?.let { ReferenceWithVersion(value.reference, value.versionMap) },
+            reference,
             schema,
             versionNumber,
             versionMap
@@ -652,9 +651,9 @@ class DatabaseImpl(
         // TODO(#4889): Don't do this one-by-one.
         data.values
             .map {
-                getEntityReferenceId(it.reference, db) to it.versionMap
+                getEntityReferenceId(it, db)
             }
-            .forEach { (referenceId, versionMap) ->
+            .forEach { referenceId ->
                 when (dataType) {
                     DataType.Collection ->
                         counters?.increment(DatabaseCounters.INSERT_COLLECTION_ENTRY)
@@ -665,10 +664,7 @@ class DatabaseImpl(
                 insertOrThrow(
                     TABLE_COLLECTION_ENTRIES,
                     null,
-                    content.apply {
-                        put("value_id", referenceId)
-                        put("version_map", versionMap.toProtoLiteral())
-                    }
+                    content.apply { put("value_id", referenceId) }
                 )
             }
         true
@@ -681,8 +677,8 @@ class DatabaseImpl(
         counters: Counters? = null
     ): Boolean {
         // Convert Singleton into a a zero-or-one-element Collection.
-        val set = mutableSetOf<ReferenceWithVersion>()
-        data.value?.let { set.add(it) }
+        val set = mutableSetOf<Reference>()
+        data.reference?.let { set.add(it) }
         val collectionData = with(data) {
             DatabaseData.Collection(
                 set,
@@ -1271,33 +1267,81 @@ class DatabaseImpl(
             CollectionMetadata(collectionId, versionMap, versionNumber)
         }
 
+    private fun getCollectionEntries(
+        collectionId: CollectionId,
+        typeId: TypeId,
+        db: SQLiteDatabase,
+        counters: Counters?
+    ): Set<*> = if (isPrimitiveType(typeId)) {
+        getCollectionPrimitiveEntries(collectionId, typeId, db, counters)
+    } else {
+        getCollectionReferenceEntries(collectionId, db)
+    }
+
+    private fun getCollectionPrimitiveEntries(
+        collectionId: CollectionId,
+        typeId: TypeId,
+        db: SQLiteDatabase,
+        counters: Counters?
+    ): Set<*> {
+        // Booleans are easy, just fetch the values from the collection_entries table directly.
+        if (typeId.toInt() == PrimitiveType.Boolean.id) {
+            counters?.increment(DatabaseCounters.GET_PRIMITIVE_COLLECTION_INLINE)
+            return db.rawQuery(
+                "SELECT value_id FROM collection_entries WHERE collection_id = ?",
+                arrayOf(collectionId.toString())
+            ).map { it.getBoolean(0).toReferencable() }.toSet()
+        }
+
+        // For strings and numbers, join against the appropriate primitive table.
+        val (tableName, valueGetter) = when (typeId.toInt()) {
+            PrimitiveType.Text.id -> {
+                counters?.increment(DatabaseCounters.GET_PRIMITIVE_COLLECTION_TEXT)
+                TABLE_TEXT_PRIMITIVES to { cursor: Cursor -> cursor.getString(0).toReferencable() }
+            }
+            PrimitiveType.Number.id -> {
+                counters?.increment(DatabaseCounters.GET_PRIMITIVE_COLLECTION_NUMBER)
+                TABLE_NUMBER_PRIMITIVES to {
+                    cursor: Cursor -> cursor.getDouble(0).toReferencable()
+                }
+            }
+            else -> throw IllegalArgumentException("Not a primitive type ID: $typeId")
+        }
+        return db.rawQuery(
+            """
+                SELECT $tableName.value
+                FROM collection_entries
+                JOIN $tableName ON collection_entries.value_id = $tableName.id
+                WHERE collection_entries.collection_id = ?
+            """.trimIndent(),
+            arrayOf(collectionId.toString())
+        ).map(valueGetter).toSet()
+    }
+
     private fun getCollectionReferenceEntries(
         collectionId: CollectionId,
         db: SQLiteDatabase
-    ): Set<ReferenceWithVersion> = db.rawQuery(
+    ): Set<Reference> = db.rawQuery(
         """
             SELECT
                 entity_refs.entity_id,
                 entity_refs.creation_timestamp,
                 entity_refs.expiration_timestamp,
                 entity_refs.backing_storage_key,
-                entity_refs.version_map,
-                collection_entries.version_map
+                entity_refs.version_map
             FROM collection_entries
             JOIN entity_refs ON collection_entries.value_id = entity_refs.id
             WHERE collection_entries.collection_id = ?
         """.trimIndent(),
         arrayOf(collectionId.toString())
     ).map {
-        ReferenceWithVersion(
-            Reference(
-                id = it.getString(0),
-                storageKey = StorageKeyParser.parse(it.getString(3)),
-                version = it.getVersionMap(4),
-                _creationTimestamp = it.getLong(1),
-                _expirationTimestamp = it.getLong(2)
-            ),
-        it.getVersionMap(5)!!)
+        Reference(
+            id = it.getString(0),
+            storageKey = StorageKeyParser.parse(it.getString(3)),
+            version = it.getVersionMap(4),
+            _creationTimestamp = it.getString(1).toLong(),
+            _expirationTimestamp = it.getString(2).toLong()
+        )
     }.toSet()
 
     /** Returns true if the given [TypeId] represents a primitive type. */
@@ -1547,7 +1591,7 @@ class DatabaseImpl(
     )
 
     companion object {
-        private const val DB_VERSION = 4
+        private const val DB_VERSION = 3
 
         private const val TABLE_STORAGE_KEYS = "storage_keys"
         private const val TABLE_COLLECTION_ENTRIES = "collection_entries"
@@ -1638,12 +1682,7 @@ class DatabaseImpl(
                     collection_id INTEGER NOT NULL,
                     -- For collections of primitives: value_id for primitive in collection.
                     -- For collections/singletons of entities: id of reference in entity_refs table.
-                    value_id INTEGER NOT NULL,
-                    -- Serialized VersionMapProto for the entry in this collection/singleton
-                    -- (version at which the entry was added to the collection).
-                    -- (Not required for entity field collections but required for top level
-                    -- collections.)
-                    version_map TEXT
+                    value_id INTEGER NOT NULL
                 );
 
                 CREATE INDEX collection_entries_collection_id_index
@@ -1721,10 +1760,7 @@ class DatabaseImpl(
 
         private val VERSION_3_MIGRATION = listOf(DROP, CREATE).flatten().toTypedArray()
 
-        private val VERSION_4_MIGRATION = VERSION_3_MIGRATION
-
-        private val MIGRATION_STEPS =
-            mapOf(2 to VERSION_2_MIGRATION, 3 to VERSION_3_MIGRATION, 4 to VERSION_4_MIGRATION)
+        private val MIGRATION_STEPS = mapOf(2 to VERSION_2_MIGRATION, 3 to VERSION_3_MIGRATION)
 
         /** The primitive types that are stored in TABLE_NUMBER_PRIMITIVES */
         private val TYPES_IN_NUMBER_TABLE = listOf(

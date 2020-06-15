@@ -26,7 +26,6 @@ import arcs.core.storage.database.Database
 import arcs.core.storage.database.DatabaseClient
 import arcs.core.storage.database.DatabaseData
 import arcs.core.storage.database.DatabaseManager
-import arcs.core.storage.database.ReferenceWithVersion
 import arcs.core.storage.keys.DatabaseStorageKey
 import arcs.core.storage.referencemode.toCrdtSetData
 import arcs.core.storage.referencemode.toCrdtSingletonData
@@ -188,11 +187,8 @@ class DatabaseDriver<Data : Any>(
                 val referenceData = requireNotNull(data as? CrdtSingleton.Data<Reference>) {
                     "Data must be CrdtSingleton.Data<Reference>"
                 }
-                // Use consumerView logic to extract the item from the crdt.
-                val id = CrdtSingleton.createWithData(referenceData).consumerView?.id
-                val item = id?.let { referenceData.values[it] }
                 DatabaseData.Singleton(
-                    item?.let { ReferenceWithVersion(it.value, it.versionMap) },
+                    CrdtSingleton.createWithData(referenceData).consumerView,
                     schema,
                     version,
                     referenceData.versionMap
@@ -203,9 +199,7 @@ class DatabaseDriver<Data : Any>(
                     "Data must be CrdtSet.Data<Reference>"
                 }
                 DatabaseData.Collection(
-                    referenceData.values.values.map {
-                        ReferenceWithVersion(it.value, it.versionMap)
-                    }.toSet(),
+                    CrdtSet(referenceData).consumerView,
                     schema,
                     version,
                     referenceData.versionMap
@@ -230,7 +224,7 @@ class DatabaseDriver<Data : Any>(
 
         // Convert the raw DatabaseData into the appropriate CRDT data model
         val actualData = when (data) {
-            is DatabaseData.Singleton -> data.value.toCrdtSingletonData(data.versionMap)
+            is DatabaseData.Singleton -> data.reference.toCrdtSingletonData(data.versionMap)
             is DatabaseData.Collection -> data.values.toCrdtSetData(data.versionMap)
             is DatabaseData.Entity -> data.rawEntity.toCrdtEntityData(data.versionMap) {
                 if (it is Reference) it
@@ -292,7 +286,7 @@ class DatabaseDriver<Data : Any>(
                         else CrdtEntity.Reference.buildReference(refable)
                     }
                 is DatabaseData.Singleton ->
-                    it.value.toCrdtSingletonData(it.versionMap)
+                    it.reference.toCrdtSingletonData(it.versionMap)
                 is DatabaseData.Collection ->
                     it.values.toCrdtSetData(it.versionMap)
             } as Data to it.databaseVersion

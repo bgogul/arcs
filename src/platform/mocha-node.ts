@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import Mocha from 'mocha';
+import * as Mocha from 'mocha.js';
 export const mocha = new Mocha();

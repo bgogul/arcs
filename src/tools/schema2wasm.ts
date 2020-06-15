@@ -7,7 +7,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import minimist from 'minimist';
+import * as minimist from 'minimist.js';
 import {Schema2Cpp} from './schema2cpp.js';
 import {Schema2Kotlin} from './schema2kotlin.js';
 

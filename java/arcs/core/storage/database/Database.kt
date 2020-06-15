@@ -100,14 +100,14 @@ sealed class DatabaseData(
     open val versionMap: VersionMap
 ) {
     data class Singleton(
-        val value: ReferenceWithVersion?,
+        val reference: Reference?,
         override val schema: Schema,
         override val databaseVersion: Int,
         override val versionMap: VersionMap
     ) : DatabaseData(schema, databaseVersion, versionMap)
 
     data class Collection(
-        val values: Set<ReferenceWithVersion>,
+        val values: Set<Reference>,
         override val schema: Schema,
         override val databaseVersion: Int,
         override val versionMap: VersionMap
@@ -120,8 +120,3 @@ sealed class DatabaseData(
         override val versionMap: VersionMap
     ) : DatabaseData(schema, databaseVersion, versionMap)
 }
-
-data class ReferenceWithVersion(
-    val reference: Reference,
-    val versionMap: VersionMap
-)
