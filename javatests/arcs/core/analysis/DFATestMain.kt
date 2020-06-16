@@ -7,11 +7,23 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>) {
+    val DOT_OPTION = "--dot"
     if (args.size == 0) {
-        print("Usage: run_dfa <file1> <file2> ...")
+        print(
+            """
+            Usage:
+                run_dfa [--dot] <file1> <file2> ...)
+
+            Options:
+                --dot: dump the dot representation of the recipe graph.
+            """.trimIndent()
+        )
         return
     }
-    args.forEach { verifyChecksInFile(it) }
+    var dumpDot: Boolean = args.any { it == DOT_OPTION }
+    args.asSequence()
+        .filter { it != DOT_OPTION }
+        .forEach { verifyChecksInFile(it, dumpDot) }
 }
 
 fun Check.asString(): String {
@@ -65,7 +77,7 @@ public class ConsoleColors {
     }
 }
 
-fun verifyChecksInFile(manifestFile: String) {
+fun verifyChecksInFile(manifestFile: String, dumpDot: Boolean) {
     val INGRESS_PREFIX = "// #Ingress:"
     val FAIL_PREFIX = "// #Fail:"
     val OK_PREFIX = "// #OK"
@@ -99,6 +111,10 @@ fun verifyChecksInFile(manifestFile: String) {
         return
     }
     val recipe = requireNotNull(recipes.firstOrNull())
+    if (dumpDot) {
+        print(RecipeGraph(recipe).toDotGraph { "" })
+        return
+    }
     val result = InformationFlow.computeLabels(recipe, ingresses.toList())
     print("${ConsoleColors.showInBlue("[Computed Labels]")}\n")
     print(
