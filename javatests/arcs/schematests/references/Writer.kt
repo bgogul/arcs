@@ -1,6 +1,6 @@
 @file:Suppress("EXPERIMENTAL_FEATURE_WARNING")
 
-package arcs.showcase.references
+package arcs.schematests.references
 
 import arcs.core.entity.awaitReady
 import arcs.jvm.host.TargetHost

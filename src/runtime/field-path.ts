@@ -8,73 +8,68 @@
  * http://polymer.github.io/PATENTS.txt
  */
 import {Schema} from './schema.js';
-import {InterfaceInfo, Type, EntityType} from './type.js';
-import {SchemaPrimitiveTypeValue} from './manifest-ast-nodes.js';
-
-export type FieldPathType = Type | SchemaPrimitiveTypeValue;
+import {InterfaceInfo, Type} from './type.js';
 
 /**
- * Resolves a field path against the given Type. Returns the Type referenced by
- * the field path if valid. Throws an exception if the field path is invalid.
+ * Validates a field path against the given Type. Throws an exception if the
+ * field path is invalid.
  */
-export function resolveFieldPathType(fieldPath: string[], type: Type): FieldPathType {
+export function validateFieldPath(fieldPath: string[], type: Type) {
   if (fieldPath.length === 0) {
-    return type;
+    return;
   }
   if (type.isTypeContainer()) {
-    return resolveFieldPathType(fieldPath, type.getContainedType());
+    validateFieldPath(fieldPath, type.getContainedType());
+    return;
   }
 
   const schema = type.getEntitySchema();
   if (!schema) {
     if (InterfaceInfo.isTypeVar(type)) {
       if (type.canWriteSuperset == null) {
-        throw new FieldPathError(`Type variable ${type} does not contain field '${fieldPath[0]}'.`);
+        throw new Error(`Type variable ${type} does not contain field '${fieldPath[0]}'.`);
       }
-      return resolveFieldPathType(fieldPath, type.canWriteSuperset);
+      validateFieldPath(fieldPath, type.canWriteSuperset);
+      return;
     } else {
-      throw new FieldPathError(`Expected type to contain an entity schema: ${type}.`);
+      throw new Error(`Expected type to contain an entity schema: ${type}.`);
     }
   }
 
-  return resolveForSchema(fieldPath, schema);
+  if (!checkSchema(fieldPath, schema)) {
+    throw new Error(`Field '${fieldPath.join('.')}' does not exist in: ${schema.toManifestString()}`);
+  }
 }
 
 /** Checks a field path for a particular field definition. */
-function resolveForField(fieldPath: string[], field): FieldPathType {
+function checkField(fieldPath: string[], field): boolean {
   switch (field.kind) {
     case 'schema-primitive': {
       // Field path must end here.
-      if (fieldPath.length === 1) {
-        return field.type;
-      } else {
-        throw new FieldPathError(`Field path '${fieldPath.join('.')}' could not be resolved because '${fieldPath[1]}' is a primitive.`);
-      }
+      return fieldPath.length === 1;
     }
     case 'schema-collection': {
       // Check inner type.
-      return resolveForField(fieldPath, field.schema);
+      return checkField(fieldPath, field.schema);
     }
     case 'schema-reference': {
       // Check rest of field path against inner type.
-      return resolveForSchema(fieldPath.slice(1), field.schema.model.entitySchema);
+      return checkSchema(fieldPath.slice(1), field.schema.model.entitySchema);
     }
     default:
-      throw new FieldPathError(`Unsupported field type: ${JSON.stringify(field)}`);
+      throw new Error(`Unsupported field type: ${JSON.stringify(field)}`);
   }
 }
 
 /** Checks a field path against the given Schema. */
-function resolveForSchema(fieldPath: string[], schema: Schema): FieldPathType {
+function checkSchema(fieldPath: string[], schema: Schema): boolean {
   if (fieldPath.length === 0) {
-    return new EntityType(schema);
+    return true;
   }
   const fieldName = fieldPath[0];
   if (!(fieldName in schema.fields)) {
-    throw new FieldPathError(`Schema '${schema.toInlineSchemaString()}' does not contain field '${fieldName}'.`);
+    return false;
   }
   const field = schema.fields[fieldName];
-  return resolveForField(fieldPath, field);
+  return checkField(fieldPath, field);
 }
-
-class FieldPathError extends Error {}

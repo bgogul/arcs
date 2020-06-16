@@ -1,6 +1,6 @@
 @file:Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 
-package arcs.showcase.references
+package arcs.schematests.references
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle

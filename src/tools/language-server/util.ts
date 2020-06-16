@@ -8,8 +8,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import * as url from 'url';
-import fs from 'fs';
+import * as url from 'url.js';
+import * as fs from 'fs.js';
 
 export interface LanguageServiceOptions {
   log: string;       // The logging service to use ('console', 'null', or a file path).

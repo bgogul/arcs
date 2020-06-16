@@ -1,4 +1,4 @@
-package arcs.showcase.references
+package arcs.schematests.references
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider

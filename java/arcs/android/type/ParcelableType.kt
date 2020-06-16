@@ -79,7 +79,6 @@ sealed class ParcelableType(open val actual: Type) : Parcelable {
         }
     }
 
-    /** [Parcelable] variant of [arcs.core.data.MuxType]. */
     data class MuxType(
         override val actual: arcs.core.data.MuxType<*>
     ) : ParcelableType(actual) {

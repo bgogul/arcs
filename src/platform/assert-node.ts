@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import assert from 'assert';
+import * as assert from 'assert.js';
 export {assert};

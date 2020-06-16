@@ -1,4 +1,4 @@
-package arcs.showcase.references
+package arcs.schematests.references
 
 data class MyLevel0(
     val name: String

@@ -10,7 +10,7 @@
 import {KotlinGenerationUtils, leftPad, quote} from './kotlin-generation-utils.js';
 import {AddFieldOptions, ClassGenerator} from './schema2base.js';
 import {SchemaNode} from './schema2graph.js';
-import minimist from 'minimist';
+import * as minimist from 'minimist.js';
 import {getTypeInfo} from './kotlin-codegen-shared.js';
 import {assert} from '../platform/assert-web.js';
 import {Schema} from '../runtime/schema.js';

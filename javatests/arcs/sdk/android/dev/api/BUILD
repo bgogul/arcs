@@ -10,5 +10,6 @@ java_test(
     deps = [
         "//java/arcs/sdk/android/dev/api:api-android",
         "//third_party/java/junit",
+        "@robolectric//bazel:android-all",
     ],
 )

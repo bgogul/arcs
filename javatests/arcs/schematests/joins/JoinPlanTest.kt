@@ -1,4 +1,4 @@
-package arcs.showcase.joins
+package arcs.schematests.joins
 
 import arcs.core.storage.api.DriverAndKeyConfigurator
 import arcs.core.storage.keys.JoinStorageKey

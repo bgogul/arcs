@@ -27,7 +27,7 @@ arcs_kt_jvm_library(
 arcs_kt_jvm_test_suite(
     name = "joins",
     srcs = glob(["*Test.kt"]),
-    package = "arcs.showcase.joins",
+    package = "arcs.schematests.joins",
     deps = [
         ":join_codegen",
         "//java/arcs/core/data",
