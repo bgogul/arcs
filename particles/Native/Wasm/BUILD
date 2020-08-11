@@ -19,7 +19,7 @@ arcs_kt_schema(
 
 arcs_kt_particles(
     name = "service_particle",
-    srcs = ["ServiceParticle.kt"],
+    srcs = ["source/ServiceParticle.kt"],
     package = "arcs",
     platforms = ["wasm"],
     deps = [":wasm_schemas"],
@@ -27,7 +27,7 @@ arcs_kt_particles(
 
 arcs_kt_particles(
     name = "test_particle",
-    srcs = ["TestParticle.kt"],
+    srcs = ["source/TestParticle.kt"],
     package = "arcs",
     platforms = ["wasm"],
     deps = [":wasm_schemas"],
@@ -42,7 +42,5 @@ arcs_manifest(
 arcs_manifest_bundle(
     name = "bundle",
     visibility = ["//visibility:public"],
-    deps = [
-        ":harness_manifest",
-    ],
+    deps = [":harness_manifest"],
 )

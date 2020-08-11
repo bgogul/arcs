@@ -37,12 +37,7 @@ open class ProdArcHostService : ArcHostService() {
         lifecycle: Lifecycle,
         schedulerProvider: SchedulerProvider,
         vararg particles: ParticleRegistration
-    ) : AndroidHost(
-        context = context,
-        lifecycle = lifecycle,
-        schedulerProvider = schedulerProvider,
-        particles = *particles
-    ), ProdHost
+    ) : AndroidHost(context, lifecycle, schedulerProvider, *particles), ProdHost
 
     /**
      * This is open for tests to override, but normally isn't necessary.

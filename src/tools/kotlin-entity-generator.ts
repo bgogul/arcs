@@ -10,7 +10,7 @@
 import {KotlinGenerationUtils, leftPad, quote} from './kotlin-generation-utils.js';
 import {EntityGenerator} from './schema2base.js';
 import {SchemaNode} from './schema2graph.js';
-import minimist from 'minimist';
+import * as minimist from 'minimist.js';
 import {generateSchema} from './kotlin-schema-generator.js';
 import {assert} from '../platform/assert-web.js';
 import {escapeIdentifier} from './kotlin-codegen-shared.js';

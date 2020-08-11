@@ -24,7 +24,6 @@ import arcs.sdk.android.storage.service.StorageServiceConnection
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -33,7 +32,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  * Implementation of [Service] for devtools to enable a [DevWebSocket] connection to a remote
  * device by exposing the [IDevToolsService] API.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 class DevToolsService : Service() {
 
     private val coroutineContext = Dispatchers.Default + CoroutineName("DevtoolsService")
@@ -49,8 +47,8 @@ class DevToolsService : Service() {
     private val forwardProxyMessage = object : IStorageServiceCallback.Stub() {
         override fun onProxyMessage(proxyMessage: ByteArray) {
             scope.launch {
-                val rawMessage = RawDevToolsMessage(proxyMessage.decodeProxyMessage().toString())
-                devToolsServer.send(rawMessage.toJson())
+                val actualMessage = proxyMessage.decodeProxyMessage()
+                devToolsServer.send(actualMessage.toString())
             }
         }
     }
@@ -69,7 +67,6 @@ class DevToolsService : Service() {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onBind(intent: Intent): IBinder? {
         scope.launch {
             val extras = intent.extras
@@ -85,7 +82,7 @@ class DevToolsService : Service() {
 
             binder.send(service.getStorageKeys() ?: "")
             devToolsServer.addOnOpenWebsocketCallback {
-                devToolsServer.send(service.getStorageKeys() ?: "")
+                devToolsServer.send(service?.getStorageKeys() ?: "")
             }
 
             storageService = service

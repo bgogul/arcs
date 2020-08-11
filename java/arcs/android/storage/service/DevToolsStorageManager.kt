@@ -13,6 +13,7 @@ package arcs.android.storage.service
 
 import arcs.core.storage.StorageKey
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
@@ -21,6 +22,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  */
 @ExperimentalCoroutinesApi
 class DevToolsStorageManager(
+    /** [CoroutineContext] on which to build one specific to this [DevToolsStorageManager]. */
+    parentCoroutineContext: CoroutineContext,
     /** The stores managed by StorageService. */
     val stores: ConcurrentHashMap<StorageKey, DeferredStore<*, *, *>>,
     val proxy: IDevToolsProxy

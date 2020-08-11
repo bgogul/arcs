@@ -336,10 +336,7 @@ export async function typeToProtoPayload(type: Type) {
     case 'TypeVariable': {
       const constraintType = type.canReadSubset || type.canWriteSuperset;
       const name = {name: (type as TypeVariable).variable.name};
-      const constraint = {constraint: {maxAccess: (type as TypeVariable).variable.resolveToMaxType || false}};
-      if (constraintType) {
-        constraint.constraint['constraintType'] = await typeToProtoPayload(constraintType);
-      }
+      const constraint = constraintType ? {constraint: {constraintType: await typeToProtoPayload(constraintType)}} : {};
       return {variable: {...name, ...constraint}};
     }
     default: throw new Error(`Type '${type.tag}' is not supported.`);

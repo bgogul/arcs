@@ -7,9 +7,9 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import fs from 'fs';
-import path from 'path';
-import minimist from 'minimist';
+import * as fs from 'fs.js';
+import * as path from 'path.js';
+import * as minimist from 'minimist.js';
 import {Manifest} from '../runtime/manifest.js';
 import {Runtime} from '../runtime/runtime.js';
 import {SchemaGraph, SchemaNode} from './schema2graph.js';

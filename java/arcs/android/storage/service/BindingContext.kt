@@ -33,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withTimeout
 
@@ -142,8 +141,7 @@ class BindingContext(
         proxyMessage: ByteArray,
         resultCallback: IResultCallback
     ) {
-        // TODO(b/163418411) Remove this runBlocking and fix all of the flaky tests that result
-        runBlocking {
+        scope.launch {
             bindingContextStatisticsSink.traceTransaction("sendProxyMessage") {
                 bindingContextStatisticsSink.measure {
                     val actualMessage = proxyMessage.decodeProxyMessage()

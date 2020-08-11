@@ -30,12 +30,7 @@ abstract class AndroidResurrectableHost(
     lifecycle: Lifecycle,
     schedulerProvider: SchedulerProvider,
     vararg particles: ParticleRegistration
-) : AndroidHost(
-    context = context,
-    lifecycle = lifecycle,
-    schedulerProvider = schedulerProvider,
-    particles = *particles
-), ResurrectableHost {
+) : AndroidHost(context, lifecycle, schedulerProvider, *particles), ResurrectableHost {
 
     override val resurrectionHelper: ResurrectionHelper = ResurrectionHelper(
         context,
