@@ -8,8 +8,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import idb, {ObjectStore} from 'idb.js';
-import rs from 'jsrsasign.js';
+import idb, {ObjectStore} from 'idb';
+import rs from 'jsrsasign';
 
 import {crypto} from '../../platform/crypto-web.js';
 import {decode, encode} from './base64.js';

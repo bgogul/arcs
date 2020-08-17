@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {TextEncoder, TextDecoder} from 'util.js';
+import {TextEncoder, TextDecoder} from 'util';
 export {TextEncoder, TextDecoder};

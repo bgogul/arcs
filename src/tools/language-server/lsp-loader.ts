@@ -7,8 +7,8 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import fs from 'fs.js';
-import path from 'path.js';
+import fs from 'fs';
+import path from 'path';
 
 import {Logger} from './util.js';
 import {Loader} from '../../platform/loader.js';
