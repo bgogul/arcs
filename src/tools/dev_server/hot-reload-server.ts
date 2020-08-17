@@ -8,8 +8,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import WebSocket from 'ws';
-import * as fs from 'fs';
+import WebSocket from 'ws.js';
+import fs from 'fs.js';
 
 /**
  * Hot Reload Server is opening a WebSocket connection for Arcs Explorer to support hot code reload feature.

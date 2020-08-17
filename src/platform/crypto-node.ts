@@ -8,6 +8,6 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import WebCrypto from 'node-webcrypto-ossl';
+import WebCrypto from 'node-webcrypto-ossl.js';
 
 export const crypto = new WebCrypto();

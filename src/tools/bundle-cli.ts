@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import minimist from 'minimist';
+import minimist from 'minimist.js';
 
 import {bundle} from './bundle.js';
 

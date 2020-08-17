@@ -7,9 +7,9 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import minimist from 'minimist';
-import fs from 'fs';
-import path from 'path';
+import minimist from 'minimist.js';
+import fs from 'fs.js';
+import path from 'path.js';
 import {Runtime} from '../runtime/runtime.js';
 import {encodeManifestToProto} from './manifest2proto.js';
 

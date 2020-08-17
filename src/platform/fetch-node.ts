@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import fetch from 'node-fetch';
+import fetch from 'node-fetch.js';
 export {fetch};

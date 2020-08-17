@@ -8,8 +8,8 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import WebSocket from 'ws';
-import {Server} from 'http';
+import WebSocket from 'ws.js';
+import {Server} from 'http.js';
 import {Consumer} from '../../runtime/hot.js';
 
 const reset = `\x1b[0m`;

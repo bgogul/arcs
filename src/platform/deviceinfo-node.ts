@@ -7,7 +7,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-import os from 'os';
+import os from 'os.js';
 // Provides access to device hardware resource metrics for a node process.
 export class DeviceInfo {
   // Returns the number of logical cores.

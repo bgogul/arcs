@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import chai from 'chai';
+import chai from 'chai.js';
 
 // tslint:disable-next-line: no-default-export
 export default chai;
