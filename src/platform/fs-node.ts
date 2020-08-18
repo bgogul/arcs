@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import fs from 'fs.js';
+import fs from 'fs';
 export {fs};

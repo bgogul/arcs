@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import crypto from 'crypto.js';
+import crypto from 'crypto';
 
 export async function digest(str: string) {
   const sha = crypto.createHash('sha1');

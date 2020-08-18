@@ -15,7 +15,6 @@ java_test(
     name = "run_dfa",
     main_class = "arcs.tools.RunDFAMainKt",
     runtime_deps = [":run_dfa_main_lib"],
-    deps = ["@robolectric//bazel:android-all"],
 )
 
 kt_jvm_library(

@@ -8,9 +8,9 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import fs from 'fs.js';
-import path from 'path.js';
-import JSZip from 'jszip.js';
+import fs from 'fs';
+import path from 'path';
+import JSZip from 'jszip';
 
 import {Loader} from '../platform/loader.js';
 import {Manifest} from '../runtime/manifest.js';

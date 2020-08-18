@@ -8,7 +8,7 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import {Diagnostic, DiagnosticSeverity, Range} from 'vscode-languageserver.js';
+import {Diagnostic, DiagnosticSeverity, Range} from 'vscode-languageserver';
 import {Manifest, ManifestError} from '../../runtime/manifest.js';
 import {SourcePosition} from '../../runtime/manifest-ast-nodes.js';
 import {Logger, uri2path, normalizeUri} from './util.js';

@@ -8,5 +8,5 @@
  * http://polymer.github.io/PATENTS.txt
  */
 
-import path from 'path.js';
+import path from 'path';
 export {path};
